@@ -75,7 +75,7 @@ func newProject(name string) error {
 	work.Projects = append(work.Projects, newProject)
 	return nil
 }
-func listProjects() {
+func listProjectsDetails() {
 	fmt.Println("")
 	fmt.Println("")
 	fmt.Println("Listing projects")
@@ -94,5 +94,59 @@ func listProjects() {
 			fmt.Println(streak.Duration)
 		}
 		fmt.Println("")
+		showHoursByDays(project.Name)
+		fmt.Println("")
 	}
+	if work.CurrentProjectName != "" {
+		fmt.Print("Current working project: ")
+		color.Blue(work.CurrentProjectName)
+	}
+}
+func listProjects() {
+	fmt.Println("")
+	fmt.Println("")
+	fmt.Println("Listing projects")
+	fmt.Println("")
+	for k, project := range work.Projects {
+		fmt.Println("project " + strconv.Itoa(k))
+		fmt.Print("name: ")
+		color.Blue(project.Name)
+		showHoursByDays(project.Name)
+		fmt.Println("")
+	}
+	if work.CurrentProjectName != "" {
+		fmt.Print("Current working project: ")
+		color.Blue(work.CurrentProjectName)
+	}
+}
+func deleteProject(name string) {
+	i := getProjectIByName(name)
+	if i < 0 {
+		color.Red("Project name: " + name + ", no exists")
+		return
+	}
+	work.Projects = append(work.Projects[:i], work.Projects[i+1:]...)
+}
+func showHoursByDays(name string) {
+	timeFormat := "Mon, 01/02/06"
+	i := getProjectIByName(name)
+	if i < 0 {
+		color.Red("Project name: " + name + ", no exists")
+		return
+	}
+	p := work.Projects[i]
+	days := make(map[string]time.Duration)
+	for _, streak := range p.Streaks {
+		days[streak.Start.Format(timeFormat)] = addDurations(days[streak.Start.Format(timeFormat)], streak.Duration)
+	}
+	for day, hours := range days {
+		fmt.Print("	Day: " + day)
+		fmt.Print(", total time: ")
+		fmt.Println(hours)
+	}
+}
+func addDurations(d1 time.Duration, d2 time.Duration) time.Duration {
+	s := d1.Seconds() + d2.Seconds()
+	r := time.Duration(s) * time.Second
+	return r
 }

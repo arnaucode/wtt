@@ -25,7 +25,7 @@ func main() {
 	//get the command line parameters
 	if len(os.Args) > 1 {
 		switch os.Args[1] {
-		case "new":
+		case "new", "n":
 			//create project os.Args[2]
 			if len(os.Args) > 2 {
 				projectName := os.Args[2]
@@ -39,11 +39,18 @@ func main() {
 				color.Red("No project name specified")
 			}
 			break
-		case "list":
-			//list projects
-			listProjects()
+		case "list", "ls":
+			if len(os.Args) > 2 {
+				param := os.Args[2]
+				if param == "-a" {
+					listProjectsDetails()
+				}
+			} else {
+				//list projects
+				listProjects()
+			}
 			break
-		case "start":
+		case "start", "s":
 			//check if already there is any project started
 			if work.CurrentProjectName != "" {
 				color.Red("Can not start project, already project " + work.CurrentProjectName + " running")
@@ -63,6 +70,8 @@ func main() {
 				work.CurrentProjectName = projectName
 				saveWork()
 				fmt.Println("starting to work in project " + work.Projects[i].Name)
+			} else {
+				color.Red("No project name to start selected")
 			}
 			break
 		case "stop":
@@ -80,18 +89,46 @@ func main() {
 			work.Projects[i].Streaks[j].Duration = time.Now().Sub(work.Projects[i].Streaks[j].Start)
 			work.CurrentProjectName = ""
 			saveWork()
-			fmt.Print("Worked ")
-			fmt.Print(work.Projects[i].Streaks[j].Duration)
-			fmt.Println(" in the project " + work.Projects[i].Name)
-
-			//stop project os.Args[2]
+			color.Green("Worked " + work.Projects[i].Streaks[j].Duration.String() + " in the project " + work.Projects[i].Name)
 			break
+		case "rm":
+			if len(os.Args) > 2 {
+				projectName := os.Args[2]
+				if work.CurrentProjectName == projectName {
+					work.CurrentProjectName = ""
+				}
+				deleteProject(projectName)
+				saveWork()
+				color.Yellow("Project " + projectName + " deleted")
+			} else {
+				color.Red("no project name specified")
+			}
+
+			break
+		case "current", "c":
+			if work.CurrentProjectName != "" {
+				fmt.Print("Current working project: ")
+				color.Blue(work.CurrentProjectName)
+			} else {
+				fmt.Println("No current working project.")
+			}
+		case "help", "h":
+			fmt.Println("./wtt new {projectname}")
+			fmt.Println("./wtt ls")
+			fmt.Println("./wtt ls -a")
+			fmt.Println("./wtt start {projectname}")
+			fmt.Println("./wtt stop")
+			fmt.Println("./wtt rm")
+			fmt.Println("./wtt current")
+			fmt.Println("./wtt help")
 		default:
-			color.Red("no option selected")
+			color.Red("option not exists")
 			os.Exit(1)
 		}
 	} else {
 		color.Red("no option selected")
+		fmt.Println("Can run 'help' for commands information")
+		fmt.Println("./wtt help")
 		os.Exit(1)
 	}
 }
