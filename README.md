@@ -11,7 +11,7 @@ export PATH="$PATH:/home/user/path/wtt"
 ```
 wtt new ProjectName
 ```
-    - Abreviation:
+    - Abbreviation:
 ```
 wtt n ProjectName
 ```
@@ -20,7 +20,7 @@ wtt n ProjectName
 ```
 wtt list
 ```
-    - Abreviation:
+    - Abbreviation:
 ```
 wtt ls
 ```
@@ -34,7 +34,7 @@ wtt ls -a
 ```
 wtt start ProjectName
 ```
-    - Abreviation:
+    - Abbreviation:
 ```
 wtt s ProjectName
 ```
@@ -53,7 +53,7 @@ wtt rm ProjectName
 ```
 wtt current
 ```
-    - Abreviation:
+    - Abbreviation:
 ```
 wtt c
 ```
@@ -61,7 +61,7 @@ wtt c
 ```
 wtt help
 ```
-    - Abreviation:
+    - Abbreviation:
 ```
 wtt h
 ```
